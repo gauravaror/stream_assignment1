@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 public class TestCMS {
 	
 	public static void main(String args[]) throws IOException {
@@ -39,36 +40,42 @@ public class TestCMS {
 	}
 
 	public static void run_width_experiment(int depth, double skew, int length, Stream st, String counter_name) {
-		int [] widths = {200, 2000, 20000, 200000, 2000000, 20000000};
+		int [] widths = {2, 20, 50, 100, 150, 200, 1000, 2000, 20000, 200000, 2000000};
 		for (int i = 0; i < widths.length; i++) {
 			CMS sketch = get_counter(counter_name, depth, widths[i]);
-			double error = test_configuration(depth, widths[i], length, skew, st, sketch);
+			double [] error = test_configuration(depth, widths[i], length, skew, st, sketch);
 			System.out.println(counter_name + " Maximum error in stream is Width : "  + 
-					String.valueOf(widths[i]) + " is  "+ String.valueOf(error));
+					String.valueOf(widths[i]) + " is  max error : "+ String.valueOf(error[0])
+					+ " ranked error : " + String.valueOf(error[1]));
 		}
 	}
 
 	public static void run_skew_experiment(int depth, int width, int length, Stream st, String counter_name) {
-		double [] skews = {0, 0.2, 0.5, 0.8, 1, 1.2,1.5, 2,2.5,10 };
+		double [] skews = {0, 0.2, 0.5, 0.8, 1.2,1.5, 2,2.5,10 };
 		for (int i = 0; i < skews.length; i++) {
 			st = new Stream(length, skews[i]);
 			CMS sketch = get_counter(counter_name, depth, width);
-			double error = test_configuration(depth, width, length, skews[i], st, sketch);
+			double[] error = test_configuration(depth, width, length, skews[i], st, sketch);
 			System.out.println(counter_name + " Maximum error in stream is Skew : "  + 
-					String.valueOf(skews[i]) + " is  "+ String.valueOf(error));
+					String.valueOf(skews[i]) + " is  max error : "+ String.valueOf(error[0])
+					+ " ranked error : " + String.valueOf(error[1]));
 		}
 	}
 
-	public static double test_configuration(int depth, int width, int length, double skew, Stream st, CMS def) {
+	public static double [] test_configuration(int depth, int width, int length, double skew, Stream st, CMS def) {
 		for (int i = 1; i <= length; i++) {
 			int item = st.stream[i];
 			def.update(item, 1);
 		}
 		double error = 0;
+		double num_errors = 0;
+		double [] store_errors = new double[st.universe];
 		for (int i = 1; i < st.universe; i++) {
 		    int def_estimate = def.query(i);
 		    if (st.get_exact(i) == 0) continue;
-		    double current_error = (def_estimate - st.get_exact(i))/(st.get_exact(i) + 0.0);
+		    double current_error = (def_estimate - st.get_exact(i))/(st.universe + 0.0);
+		    if (current_error > 0 ) num_errors += 1;
+		    store_errors[i] = current_error;
 		    if (current_error > error) {
 	                    //System.out.println(" Value: " + String.valueOf(def_estimate) + "  exact " + String.valueOf(st.get_exact(i)));
 			    error = current_error;
@@ -76,7 +83,14 @@ public class TestCMS {
 		    }
 
 		}
-		return error;
+		//System.out.println("printing before sorted array : " + Arrays.toString(store_errors));
+		Arrays.sort(store_errors);
+		//System.out.println("printing after sorted array : " + Arrays.toString(store_errors));
+		int rank = (int) Math.round((999.0/1000)*st.universe);
+	        //System.out.println(" Error %: " + String.valueOf(num_errors) + " Rank : " + rank );
+		double ranked_error = store_errors[rank];
+		double []  return_error = {error, ranked_error};
+		return return_error;
 	}
 
 	private static void run_query(String file, CMS sketch, int percent) throws IOException {

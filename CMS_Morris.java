@@ -1,6 +1,8 @@
 // COMP90056 Assignment A 2019s2
 
 // write your name/login here
+import java.lang.Math; 
+import java.util.Arrays; 
 
 public class CMS_Morris implements CMS
 {
@@ -40,14 +42,19 @@ public class CMS_Morris implements CMS
 	{
 		int min = c[0][h[0].h_basic(o, width)].mycount();
 		int current;
-		for (int j=1; j < depth ; j++)
-		{
+		int[] estimates = new int[depth];
+		estimates[0] = min;
+		for (int j=1; j < depth ; j++) {
 			current = c[j][h[j].h_basic(o, width)].mycount();
+			estimates[j] = current; 
 			if(current < min)
 			{
 				min = current;
 			}
 		}
-		return min;
+		Arrays.sort(estimates);
+		int index = depth/2;
+		int median = estimates[index];
+		return median;
 	}
 }

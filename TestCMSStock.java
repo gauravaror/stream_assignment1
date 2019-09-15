@@ -8,9 +8,7 @@ public class TestCMS {
 		int width = Integer.parseInt(args[1]);
 		int length = Integer.parseInt(args[2]);
 		int skew = Integer.parseInt(args[3]);
-		Stream st = new Stream(10000, skew);
 
-		/*
 	        System.out.println(" DEFAULT: Runing Updates");
 		CMS_default def = new CMS_default(depth, width);
 		run_updates(args[2], def, false);
@@ -23,7 +21,6 @@ public class TestCMS {
 		CMS_Morris morris = new CMS_Morris(depth, width);
 		run_updates(args[2], morris,  true);
 		run_query(args[3], morris, 100);
-		*/
 	}
 
 	private static void run_query(String file, CMS sketch, int percent) throws IOException {
