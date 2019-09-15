@@ -1,6 +1,11 @@
 // COMP90056 Assignment A 2019s2
 
-// write your name/login here
+/*
+ * Author: Gaurav Arora
+ * Assignment 1: Stream Computing.
+ * Count min Sketch Morris variant implementation.
+ *
+ */
 import java.lang.Math; 
 import java.util.Arrays; 
 

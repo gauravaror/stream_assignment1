@@ -1,3 +1,10 @@
+/*
+ * Author: Gaurav Arora
+ * Assignment 1: Stream Computing.
+ * Testing file.
+ *
+ */
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

@@ -1,6 +1,11 @@
 // COMP90056 Assignment A 2019s2
 
-// if you edit this file, write your name/login here
+/*
+ * Author: Gaurav Arora
+ * Assignment 1: Stream Computing.
+ * Testing file.
+ *
+ */
 
 public interface CMS
 {
